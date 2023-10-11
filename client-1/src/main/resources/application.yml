@@ -1,0 +1,37 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: client-1
+  security:
+    oauth2:
+      client:
+        registration:
+          # 客户端标识，务必与授权服务注册的一致
+          client-1:
+            # 已在下面的provider中配置
+            provider: spring
+            # 标识自己
+            client-id: client-1
+            client-secret: password2
+            # 展示授权服务的名字
+            client-name: authorization-server
+            # 授权方式
+            authorization-grant-type: authorization_code
+            # redirect-uri 参数的内容
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            # 请求的权限，与授权服务注册的一致
+            scope:
+              - openid
+              - profile
+              - read
+              - write
+            # 验证方式
+            client-authentication-method: client_secret_basic
+        provider:
+          # 使用google，github等不需要配置，已内置
+          spring:
+            issuer-uri: http://localhost:8080
+      resource-server:
+        jwt:
+          issuer-uri: http://localhost:8080

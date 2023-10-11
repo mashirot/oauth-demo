@@ -1,0 +1,56 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: authorization-server
+  security:
+    # 提供的user，仅供测试使用
+    user:
+      name: user
+      password: "{noop}password"
+      roles: USER
+    oauth2:
+      authorization-server:
+        client:
+          demo-0:
+            registration:
+              client-id: demo-0
+              # {noop} 不加密，明文
+              client-secret: "{noop}passwd"
+              client-name: demo-0
+              client-authentication-methods:
+                - client_secret_basic
+              # 客户端授权模式
+              authorization-grant-types:
+                # 客户端模式
+                - client_credentials
+          # 客户端标识
+          client-1:
+            registration:
+              client-id: client-1
+              client-secret: "{noop}password2"
+              # 授权方式：授权码，或使用refresh_token拿新的access_token
+              authorization-grant-types:
+                - "authorization_code"
+                - "refresh_token"
+              # 客户端验证方式
+              client-authentication-methods:
+                - client_secret_basic
+              # 在同意授权后重定向的uri
+              redirect-uris:
+                - http://127.0.0.1:8081/login/oauth2/code/client-1
+              post-logout-redirect-uris:
+                - http://127.0.0.1:8081/logout
+              # 提供的权限
+              scopes:
+                - "openid"
+                - "profile"
+                - "read"
+                - "write"
+            require-authorization-consent: true
+            token:
+              access-token-time-to-live: 3600s
+              refresh-token-time-to-live: 7200s
+logging:
+  level:
+    org.springframework.security: trace
